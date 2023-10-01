@@ -10,7 +10,7 @@ readBranch=$1
 
 function validateBranchIsInitAtRemote () {
     printWhite "${1} 의 존재 여부 검사"
-    if [ "$(git branch | grep -w -c "${1}")" -eq 0 ]; then
+    if [ "$(git branch -r | grep -v "${1}[[:graph:]]" | grep -w -c "${1}")" -eq 0 ]; then
          printRed "아직 준비되지 않은 내용입니다."
          exit 1
     fi
@@ -28,7 +28,7 @@ function switchTaskBranch() {
     validateBranchIsInitAtRemote "${1}"
     switchMainBranch
     printWhite "${1} 브랜치로 이동합니다."
-    if [ "$(git branch | grep -w -c "${1}")" -eq 0 ]; then
+    if [ "$(git branch | grep -v "${1}[[:graph:]]" | grep -c "${1}")" -eq 0 ]; then
          git branch "$1"
     fi
     git checkout "$1"
